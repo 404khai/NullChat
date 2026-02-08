@@ -1,50 +1,41 @@
-# Welcome to your Expo app 👋
+# NullChat
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Zero-Account Secure Messaging with Pseudonymous QR Pairing.
+No accounts. No memory. No servers (except for blind relay).
 
-## Get started
+## 🧠 Core Design Principle
+Identity is cryptographic. Usernames are cosmetic. Memory is optional and local.
 
-1. Install dependencies
+## 🔐 Security & Cryptography
 
-   ```bash
-   npm install
-   ```
+- **Identity Key**: Ed25519 (generated locally, stored securely).
+- **Session Keys**: X25519 (ephemeral, destroyed after session).
+- **Key Exchange**: ECDH (X25519) + HKDF (SHA-512).
+- **Encryption**: XSalsa20-Poly1305 (via TweetNaCl, equivalent to ChaCha20-Poly1305).
+- **Transport**: Blind WebSocket Relay (MQTT over WS).
 
-2. Start the app
+## 🧪 Threat Model
 
-   ```bash
-   npx expo start
-   ```
+### Defended Against
+- **MITM Attacks**: Prevented via SAS (Short Authentication String) fingerprint verification during QR handshake.
+- **Passive Network Surveillance**: All messages are end-to-end encrypted. Traffic analysis is minimized but timing/volume metadata exists.
+- **Server Compromise**: Server only sees encrypted blobs. No keys are ever sent to the server. No history is stored on the server.
+- **Replay Attacks**: Prevented via nonces (randomized for XSalsa20).
+- **Message Tampering**: Prevented via Poly1305 authenticators.
 
-In the output, you'll find options to open the app in a
+### Not Defended Against
+- **Compromised Devices**: If the OS is compromised, the app's memory can be read.
+- **Screen Recording**: A user can record the screen.
+- **Malicious Verified Peers**: If you trust the wrong person, they can leak your messages.
+- **Physical Coercion**: "Rubber-hose cryptanalysis".
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🚀 Getting Started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. Install dependencies: `npm install`
+2. Run on device: `npx expo start`
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## ⚠️ Known Limitations (MVP)
+- Signaling uses a public MQTT broker (`test.mosquitto.org`). For production, deploy a private broker.
+- No background notifications (requires APNS/FCM which requires accounts).
+- No file attachments.
+- Session is lost if app is killed (by design).
