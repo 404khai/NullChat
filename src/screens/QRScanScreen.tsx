@@ -1,11 +1,12 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import React, { useEffect, useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { signal } from '../api/signal';
 import { generateSessionKey, keyToString, stringToKey } from '../crypto';
 import { useIdentityStore } from '../store/identity';
 import { useSessionStore } from '../store/session';
 import { parseQRPayload } from '../utils/qr';
+import { FONTS, COLORS } from '../constants/theme';
 
 export default function QRScanScreen({ navigation }: any) {
   const [permission, requestPermission] = useCameraPermissions();
@@ -78,7 +79,10 @@ export default function QRScanScreen({ navigation }: any) {
             <Text style={styles.subtitle}>Align code within frame</Text>
           </View>
           <View style={styles.frame} />
-          <Button title="Cancel" color="#fff" onPress={() => navigation.goBack()} />
+          
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.cancelButton}>
+              <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
       </SafeAreaView>
     </View>
   );
@@ -88,37 +92,54 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
+    justifyContent: 'center',
   },
   text: {
       color: '#fff',
       textAlign: 'center',
       marginBottom: 20,
+      fontFamily: FONTS.regular,
   },
   overlay: {
       flex: 1,
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: 24,
+      paddingVertical: 50,
   },
   header: {
       alignItems: 'center',
-      marginTop: 20,
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      padding: 16,
+      borderRadius: 12,
   },
   title: {
-      fontSize: 20,
-      fontWeight: 'bold',
       color: '#fff',
+      fontSize: 24,
+      fontFamily: FONTS.monoBold,
+      marginBottom: 4,
   },
   subtitle: {
-      fontSize: 14,
       color: '#ccc',
+      fontSize: 14,
+      fontFamily: FONTS.mono,
   },
   frame: {
       width: 250,
       height: 250,
       borderWidth: 2,
-      borderColor: '#fff',
+      borderColor: COLORS.accent,
       borderRadius: 20,
       backgroundColor: 'transparent',
-  }
+  },
+  cancelButton: {
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      paddingHorizontal: 32,
+      paddingVertical: 12,
+      borderRadius: 20,
+  },
+  cancelText: {
+      color: '#fff',
+      fontSize: 16,
+      fontFamily: FONTS.bold,
+  },
 });

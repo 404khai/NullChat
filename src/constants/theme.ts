@@ -3,8 +3,9 @@ export const FONTS = {
     bold: 'Geist-Bold',
     mono: 'GeistMono-Regular',
     monoBold: 'GeistMono-Bold',
-    // Mapping "pixel" request to Mono since actual Pixel fonts are woff2 only in the package
-    pixel: 'GeistMono-Regular', 
+    pixel: 'DotoRegular', // Using Doto as the primary pixel font for now
+    pixelBold: 'DotoBold',
+    geistPixel: 'GeistPixel', // Placeholder for Geist Pixel
 };
 
 export const COLORS = {

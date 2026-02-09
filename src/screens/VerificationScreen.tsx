@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import { useSessionStore } from '../store/session';
-import { computeSharedSecret } from '../crypto';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import nacl from 'tweetnacl';
+import { COLORS, FONTS } from '../constants/theme';
+import { computeSharedSecret } from '../crypto';
+import { useSessionStore } from '../store/session';
 
 export default function VerificationScreen({ navigation }: any) {
   const { sessionKeyPair, peerPublicKey, peerUsername, setSharedSecret } = useSessionStore();
@@ -60,7 +61,7 @@ export default function VerificationScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,
@@ -70,35 +71,37 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontFamily: FONTS.monoBold,
+    color: COLORS.text,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
+    fontFamily: FONTS.regular,
     color: '#888',
     marginBottom: 48,
   },
   fingerprintContainer: {
     padding: 32,
-    backgroundColor: '#111',
+    backgroundColor: COLORS.secondary,
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: '#333',
+    borderColor: COLORS.border,
     marginBottom: 32,
     width: '100%',
     alignItems: 'center',
   },
   fingerprint: {
     fontSize: 48,
-    fontWeight: 'bold',
-    color: '#00ffcc', // Cyberpunk green
+    fontFamily: FONTS.monoBold,
+    color: COLORS.accent, // Cyberpunk green
     letterSpacing: 4,
     fontVariant: ['tabular-nums'],
   },
   peerName: {
       fontSize: 20,
-      color: '#fff',
+      fontFamily: FONTS.mono,
+      color: COLORS.text,
       marginBottom: 20,
   },
   spacer: {
@@ -115,15 +118,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   primary: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.primary,
   },
   primaryButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: FONTS.bold,
     color: '#000',
   },
   cancelText: {
     fontSize: 16,
-    color: '#ff4444',
+    fontFamily: FONTS.regular,
+    color: COLORS.danger,
   },
 });

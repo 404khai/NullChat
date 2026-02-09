@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS, FONTS } from '../constants/theme';
 import { useIdentityStore } from '../store/identity';
 import { useSessionStore } from '../store/session';
 
 export default function WelcomeScreen({ navigation }: any) {
   const { username, init } = useIdentityStore();
-  const resetSession = useSessionStore(state => state.resetSession);
+  const resetSession = useSessionStore((state: { resetSession: any; }) => state.resetSession);
 
   useEffect(() => {
     init();
@@ -15,6 +16,11 @@ export default function WelcomeScreen({ navigation }: any) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
+        <Image 
+            source={require('../../assets/images/logo.jpg')} 
+            style={styles.logo}
+            resizeMode="contain"
+        />
         <Text style={styles.title}>NullChat</Text>
         <Text style={styles.tagline}>No accounts. No memory.</Text>
         
@@ -47,7 +53,7 @@ export default function WelcomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,
@@ -55,48 +61,51 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  logo: {
+      width: 120,
+      height: 120,
+      marginBottom: 24,
+      borderRadius: 20,
+  },
   title: {
     fontSize: 42,
-    fontWeight: 'bold',
-    fontFamily: FONTS.bold,
-    color: '#fff',
+    fontFamily: FONTS.monoBold,
+    color: COLORS.text,
     marginBottom: 8,
   },
   tagline: {
     fontSize: 18,
+    fontFamily: FONTS.regular,
     color: '#888',
     marginBottom: 48,
-    fontFamily: FONTS.regular,
   },
   card: {
-    backgroundColor: '#111',
+    backgroundColor: COLORS.secondary,
     padding: 24,
     borderRadius: 16,
     width: '100%',
     alignItems: 'center',
     marginBottom: 48,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: COLORS.border,
   },
   label: {
     fontSize: 12,
-    fontWeight: 'bold',
-    fontFamily: FONTS.mono,
+    fontFamily: FONTS.monoBold,
     color: '#666',
     marginBottom: 8,
     letterSpacing: 1,
   },
   username: {
     fontSize: 24,
-    fontWeight: 'bold',
-    fontFamily: FONTS.monoBold,
-    color: '#fff',
+    fontFamily: FONTS.mono,
+    color: COLORS.accent,
     marginBottom: 8,
   },
   hint: {
     fontSize: 14,
-    color: '#555',
     fontFamily: FONTS.regular,
+    color: '#555',
   },
   actions: {
     width: '100%',
@@ -109,16 +118,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   primaryButton: {
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.primary,
   },
   secondaryButton: {
-    backgroundColor: '#111',
+    backgroundColor: COLORS.secondary,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: COLORS.border,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: '600',
     fontFamily: FONTS.bold,
     color: '#000',
   },
