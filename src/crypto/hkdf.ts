@@ -6,7 +6,7 @@ const HASH_SIZE = 64;   // SHA-512 output size
 function hmac(key: Uint8Array, data: Uint8Array): Uint8Array {
   let k = new Uint8Array(key);
   if (k.length > BLOCK_SIZE) {
-    k = nacl.hash(k);
+    k = new Uint8Array(nacl.hash(k));
   }
   if (k.length < BLOCK_SIZE) {
     const tmp = new Uint8Array(BLOCK_SIZE);
@@ -57,7 +57,7 @@ export function hkdf(salt: Uint8Array, ikm: Uint8Array, info: Uint8Array, length
     infoBuffer.set(info, lastT.length);
     infoBuffer[infoBuffer.length - 1] = i;
     
-    lastT = hmac(prk, infoBuffer);
+    lastT = new Uint8Array(hmac(prk, infoBuffer));
     
     const newOkm = new Uint8Array(okm.length + lastT.length);
     newOkm.set(okm);

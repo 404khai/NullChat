@@ -22,11 +22,13 @@ export interface KeyPair {
 }
 
 export const generateIdentityKey = (): KeyPair => {
-    return nacl.sign.keyPair();
+    const kp = nacl.sign.keyPair();
+    return { publicKey: kp.publicKey, privateKey: kp.secretKey };
 };
 
 export const generateSessionKey = (): KeyPair => {
-    return nacl.box.keyPair();
+    const kp = nacl.box.keyPair();
+    return { publicKey: kp.publicKey, privateKey: kp.secretKey };
 };
 
 export const keyToString = (key: Uint8Array): string => {
