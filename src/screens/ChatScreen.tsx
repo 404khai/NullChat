@@ -1,7 +1,12 @@
 import { Buffer } from 'buffer';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import nacl from 'tweetnacl';
+import { signal } from '../api/signal';
+import { COLORS, FONTS } from '../constants/theme';
+import { useIdentityStore } from '../store/identity';
+import { Message, useSessionStore } from '../store/session';
 // tweetnacl-util not available, implement helpers inline
 function decodeBase64(s: string): Uint8Array {
   return new Uint8Array(Buffer.from(s, 'base64'));
@@ -9,12 +14,9 @@ function decodeBase64(s: string): Uint8Array {
 function encodeBase64(b: Uint8Array): string {
   return Buffer.from(b).toString('base64');
 }
-import { signal } from '../api/signal';
-import { COLORS, FONTS } from '../constants/theme';
-import { useIdentityStore } from '../store/identity';
-import { Message, useSessionStore } from '../store/session';
 
-export default function ChatScreen({ navigation }: any) {
+export default function ChatScreen() {
+  const router = useRouter();
   const { sharedSecret, messages, addMessage, peerUsername, resetSession } = useSessionStore();
   const { username } = useIdentityStore();
   const [text, setText] = useState('');
@@ -24,7 +26,7 @@ export default function ChatScreen({ navigation }: any) {
 
   useEffect(() => {
     if (!sharedSecret) {
-        navigation.replace('Welcome');
+        router.replace('/Welcome');
         return;
     }
     

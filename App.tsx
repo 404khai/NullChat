@@ -1,4 +1,4 @@
-import { Doto_400Regular, Doto_700Bold } from "@expo-google-fonts/doto";
+import { Doto_400Regular, Doto_900Black } from "@expo-google-fonts/doto";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [fontsLoaded] = useFonts({
     DotoRegular: Doto_400Regular,
-    DotoBold: Doto_700Bold,
+    DotoBold: Doto_900Black,
     'Geist-Regular': require('./assets/fonts/Geist-Regular.ttf'),
     'Geist-Bold': require('./assets/fonts/Geist-Bold.ttf'),
     'GeistMono-Regular': require('./assets/fonts/GeistMono-Regular.ttf'),

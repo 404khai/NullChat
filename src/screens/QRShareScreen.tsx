@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
@@ -8,7 +9,8 @@ import { useIdentityStore } from '../store/identity';
 import { useSessionStore } from '../store/session';
 import { createQRPayload } from '../utils/qr';
 
-export default function QRShareScreen({ navigation }: any) {
+export default function QRShareScreen() {
+  const router = useRouter();
   const { username } = useIdentityStore();
   const { setSessionKeyPair, setPeerInfo } = useSessionStore();
   const [qrData, setQrData] = useState<string | null>(null);
@@ -48,7 +50,7 @@ export default function QRShareScreen({ navigation }: any) {
         if (prev <= 1) {
           clearInterval(timer);
           signal.unsubscribe(topic);
-          navigation.goBack(); // Expired
+          router.back(); // Expired
           return 0;
         }
         return prev - 1;
