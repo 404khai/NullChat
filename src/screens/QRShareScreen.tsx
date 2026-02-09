@@ -1,10 +1,11 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { signal } from '../api/signal';
 import { COLORS, FONTS } from '../constants/theme';
-import { generateSessionKey, keyToString, stringToKey } from '../crypto';
+import { generateSessionKey, keyToString, keyToTopicId, stringToKey } from '../crypto';
 import { useIdentityStore } from '../store/identity';
 import { useSessionStore } from '../store/session';
 import { createQRPayload } from '../utils/qr';
@@ -26,7 +27,7 @@ export default function QRShareScreen() {
     setQrData(payload);
 
     // Listen for handshake
-    const topic = `nullchat/handshake/${keyToString(keyPair.publicKey)}`;
+    const topic = `nullchat/handshake/${keyToTopicId(keyToString(keyPair.publicKey))}`;
     console.log('Subscribing to:', topic);
     
     signal.subscribe(topic, (msg) => {
@@ -37,7 +38,7 @@ export default function QRShareScreen() {
                 const peerPk = stringToKey(data.pk);
                 setPeerInfo(peerPk, data.u);
                 signal.unsubscribe(topic);
-                navigation.replace('Verification');
+                router.replace('/Verification');
             }
         } catch (e) {
             console.error('Handshake Parse Error', e);
@@ -90,7 +91,7 @@ export default function QRShareScreen() {
           A secure session will be established instantly.
         </Text>
         
-        <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.cancelButton} onPress={() => router.back()}>
             <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
       </View>

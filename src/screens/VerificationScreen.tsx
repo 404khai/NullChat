@@ -5,7 +5,8 @@ import nacl from 'tweetnacl';
 import { COLORS, FONTS } from '../constants/theme';
 import { computeSharedSecret } from '../crypto';
 import { useSessionStore } from '../store/session';
-export default function VerificationScreen({ navigation }: any) {
+export default function VerificationScreen() {
+  const router = useRouter();
   const { sessionKeyPair, peerPublicKey, peerUsername, setSharedSecret } = useSessionStore();
   const [fingerprint, setFingerprint] = useState<string>('');
 

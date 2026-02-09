@@ -1,10 +1,11 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { signal } from '../api/signal';
 import { COLORS, FONTS } from '../constants/theme';
-import { generateSessionKey, keyToString, stringToKey } from '../crypto';
+import { generateSessionKey, keyToString, keyToTopicId, stringToKey } from '../crypto';
 import { useIdentityStore } from '../store/identity';
 import { useSessionStore } from '../store/session';
 import { parseQRPayload } from '../utils/qr';
@@ -50,7 +51,7 @@ export default function QRScanScreen() {
             setSessionKeyPair(myKeyPair);
 
             // Publish my info to the handshake topic
-            const topic = `nullchat/handshake/${payload.pk}`;
+            const topic = `nullchat/handshake/${keyToTopicId(payload.pk)}`;
             const myInfo = {
                 pk: keyToString(myKeyPair.publicKey),
                 u: username
@@ -82,7 +83,7 @@ export default function QRScanScreen() {
           </View>
           <View style={styles.frame} />
           
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.cancelButton}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.cancelButton}>
               <Text style={styles.cancelText}>Cancel</Text>
           </TouchableOpacity>
       </SafeAreaView>

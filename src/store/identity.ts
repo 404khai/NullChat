@@ -1,9 +1,9 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { generateIdentityKey, KeyPair } from '../crypto';
 import { generateUsername } from '../utils/username';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
 
 interface IdentityState {
   keyPair: KeyPair | null;
@@ -61,7 +61,7 @@ export const useIdentityStore = create<IdentityState>()(
     }),
     {
       name: 'nullchat-identity',
-      storage: createJSONStorage(() => secureStorage),
+      storage: secureStorage,
     }
   )
 );
