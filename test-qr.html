@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NullChat Test QR Generator</title>
+    <title>NullChat Test Peer (Simulation)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tweetnacl/1.0.3/nacl.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tweetnacl-util/0.15.1/nacl-util.min.js"></script>
+    <script src="https://unpkg.com/tweetnacl@1.0.3/nacl.min.js"></script>
+    <script src="https://unpkg.com/tweetnacl-util@0.15.1/nacl-util.min.js"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background: #111; color: #fff; }
         .container { text-align: center; }
@@ -14,22 +15,111 @@
         button { padding: 12px 24px; font-size: 16px; background: #fff; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 20px; }
         button:hover { background: #ddd; }
         .info { margin-top: 20px; color: #888; font-family: monospace; word-break: break-all; font-size: 12px; }
+        .status { margin-top: 10px; font-weight: bold; color: #00ffcc; }
+        .log { margin-top: 20px; text-align: left; background: #222; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 11px; height: 150px; overflow-y: auto; }
         h1 { font-weight: 200; letter-spacing: 2px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>NullChat Test Peer</h1>
+        <div id="status" class="status">Connecting to MQTT...</div>
         <div id="qrcode"></div>
         <div class="info" id="info"></div>
         <button onclick="generate()">Generate New Identity</button>
+        <div class="log" id="log"></div>
     </div>
 
     <script>
+        // Polyfill nacl.util if not loaded correctly (common issue with some CDNs/loading order)
+        if (typeof nacl !== 'undefined' && !nacl.util) {
+            nacl.util = {};
+            nacl.util.encodeBase64 = function(arr) {
+                var s = [];
+                for (var i = 0; i < arr.length; i++) s.push(String.fromCharCode(arr[i]));
+                return btoa(s.join(''));
+            };
+            nacl.util.decodeBase64 = function(s) {
+                var d = atob(s), b = new Uint8Array(d.length);
+                for (var i = 0; i < d.length; i++) b[i] = d.charCodeAt(i);
+                return b;
+            };
+        }
+
+        const BROKER_URL = 'ws://test.mosquitto.org:8080';
+        let client = null;
+        let currentTopic = null;
+        let myKeyPair = null;
+
+        function log(msg) {
+            const el = document.getElementById("log");
+            el.innerText += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+            el.scrollTop = el.scrollHeight;
+            console.log(msg);
+        }
+
+        function connectMqtt() {
+            client = mqtt.connect(BROKER_URL);
+            
+            client.on('connect', () => {
+                document.getElementById("status").innerText = "MQTT Connected. Ready to Generate.";
+                log("Connected to MQTT Broker");
+                generate();
+            });
+
+            client.on('message', (topic, message) => {
+                log(`Received message on ${topic}`);
+                try {
+                    const data = JSON.parse(message.toString());
+                    log(`Handshake received from: ${data.u}`);
+                    
+                    if (data.pk) {
+                        // We received the peer's public key
+                        // In a real app, we would now:
+                        // 1. Compute shared secret
+                        // 2. Compute fingerprint
+                        // 3. Navigate to verification
+                        
+                        document.getElementById("status").innerText = `HANDSHAKE RECEIVED from ${data.u}!`;
+                        document.getElementById("status").style.color = "#0f0";
+                        
+                        const peerPk = nacl.util.decodeBase64(data.pk);
+                        const sharedSecret = nacl.scalarMult(myKeyPair.secretKey, peerPk);
+                        
+                        // Hash secret for fingerprint
+                        const hash = nacl.hash(sharedSecret);
+                        const hex = Array.from(hash.slice(0, 4)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+                        const fingerprint = hex.match(/.{1,2}/g).join(' ');
+                        
+                        log(`Shared Secret computed.`);
+                        log(`FINGERPRINT: ${fingerprint}`);
+                        
+                        alert(`Handshake Successful!\nPeer: ${data.u}\nFingerprint: ${fingerprint}\n\nCheck your app, it should be on Verification screen with the same fingerprint.`);
+                    }
+                } catch (e) {
+                    log("Error parsing message: " + e.message);
+                }
+            });
+
+            client.on('error', (err) => {
+                log("MQTT Error: " + err);
+            });
+        }
+
         function generate() {
+            if (!client || !client.connected) {
+                alert("Wait for MQTT connection");
+                return;
+            }
+
+            // Unsubscribe previous
+            if (currentTopic) {
+                client.unsubscribe(currentTopic);
+            }
+
             // Generate ephemeral key pair
-            const kp = nacl.box.keyPair();
-            const publicKeyBase64 = nacl.util.encodeBase64(kp.publicKey);
+            myKeyPair = nacl.box.keyPair();
+            const publicKeyBase64 = nacl.util.encodeBase64(myKeyPair.publicKey);
             
             const payload = {
                 pk: publicKeyBase64,
@@ -42,6 +132,8 @@
             // Clear previous
             document.getElementById("qrcode").innerHTML = "";
             document.getElementById("info").innerText = payloadStr;
+            document.getElementById("status").innerText = "Waiting for scan...";
+            document.getElementById("status").style.color = "#00ffcc";
             
             // Generate QR
             new QRCode(document.getElementById("qrcode"), {
@@ -53,20 +145,23 @@
                 correctLevel : QRCode.CorrectLevel.M
             });
 
-            console.log("Generated Payload:", payload);
-            console.log("Public Key (Base64):", publicKeyBase64);
+            log("Generated Identity: " + payload.u);
             
-            // NOTE: This test page simulates a peer.
-            // In a real scenario, this peer would need to listen on the handshake topic
-            // to complete the handshake.
-            // Handshake topic: nullchat/handshake/{safe_base64_pk}
-            
+            // Subscribe to handshake topic
             const safePk = publicKeyBase64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-            console.log("Listen Topic:", `nullchat/handshake/${safePk}`);
+            currentTopic = `nullchat/handshake/${safePk}`;
+            
+            client.subscribe(currentTopic, (err) => {
+                if (!err) {
+                    log(`Subscribed to ${currentTopic}`);
+                } else {
+                    log("Subscribe error: " + err);
+                }
+            });
         }
 
         // Init
-        generate();
+        connectMqtt();
     </script>
 </body>
 </html>
