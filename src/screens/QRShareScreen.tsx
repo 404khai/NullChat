@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import { generateSessionKey } from '../crypto';
+import { signal } from '../api/signal';
+import { COLORS, FONTS } from '../constants/theme';
+import { generateSessionKey, keyToString, stringToKey } from '../crypto';
 import { useIdentityStore } from '../store/identity';
 import { useSessionStore } from '../store/session';
 import { createQRPayload } from '../utils/qr';
-
-import { signal } from '../api/signal';
-import { keyToString, stringToKey } from '../crypto';
 
 export default function QRShareScreen({ navigation }: any) {
   const { username } = useIdentityStore();
@@ -62,7 +61,7 @@ export default function QRShareScreen({ navigation }: any) {
     };
   }, []);
 
-  if (!qrData) return <View style={styles.container}><Text>Generating...</Text></View>;
+  if (!qrData) return <View style={styles.container}><Text style={styles.loadingText}>Generating...</Text></View>;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -100,7 +99,7 @@ export default function QRShareScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,
@@ -108,15 +107,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  loadingText: {
+    color: COLORS.text,
+    fontFamily: FONTS.mono,
+  },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontFamily: FONTS.monoBold,
+    color: COLORS.text,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#ff4444',
+    fontFamily: FONTS.mono,
+    color: COLORS.danger,
     marginBottom: 32,
   },
   qrContainer: {
@@ -131,17 +135,18 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontFamily: FONTS.monoBold,
     color: '#666',
     marginBottom: 4,
   },
   username: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontFamily: FONTS.mono,
+    color: COLORS.text,
   },
   hint: {
     fontSize: 14,
+    fontFamily: FONTS.regular,
     color: '#666',
     textAlign: 'center',
     lineHeight: 20,
@@ -153,5 +158,6 @@ const styles = StyleSheet.create({
   cancelText: {
       color: '#666',
       fontSize: 16,
+      fontFamily: FONTS.regular,
   }
 });

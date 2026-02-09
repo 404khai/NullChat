@@ -1,6 +1,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
+import { Doto_400Regular, Doto_700Bold } from "@expo-google-fonts/doto";
+import {GeistPixelSquare} from "geist/font/pixel";
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback } from 'react';
 import './src/crypto'; // Load polyfills
@@ -19,10 +21,9 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'Geist-Regular': require('./assets/fonts/Geist-Regular.ttf'),
-    'Geist-Bold': require('./assets/fonts/Geist-Bold.ttf'),
-    'GeistMono-Regular': require('./assets/fonts/GeistMono-Regular.ttf'),
-    'GeistMono-Bold': require('./assets/fonts/GeistMono-Bold.ttf'),
+    DotoRegular: Doto_400Regular,
+    DotoBold: Doto_700Bold,
+    GeistPixel: GeistPixelSquare.style
   });
 
   const onLayoutRootView = useCallback(async () => {

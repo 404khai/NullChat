@@ -49,8 +49,6 @@
         }
       ]
     ],
-      "expo-font"
-    ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true

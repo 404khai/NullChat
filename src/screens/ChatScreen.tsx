@@ -1,11 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
-import { useSessionStore, Message } from '../store/session';
-import { useIdentityStore } from '../store/identity';
-import { signal } from '../api/signal';
-import nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
 import { Buffer } from 'buffer';
+import React, { useEffect, useRef, useState } from 'react';
+import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import nacl from 'tweetnacl';
+// tweetnacl-util not available, implement helpers inline
+function decodeBase64(s: string): Uint8Array {
+  return new Uint8Array(Buffer.from(s, 'base64'));
+}
+function encodeBase64(b: Uint8Array): string {
+  return Buffer.from(b).toString('base64');
+}
+import { signal } from '../api/signal';
+import { COLORS, FONTS } from '../constants/theme';
+import { useIdentityStore } from '../store/identity';
+import { Message, useSessionStore } from '../store/session';
 
 export default function ChatScreen({ navigation }: any) {
   const { sharedSecret, messages, addMessage, peerUsername, resetSession } = useSessionStore();
@@ -150,7 +157,7 @@ export default function ChatScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: COLORS.background,
   },
   header: {
       flexDirection: 'row',
@@ -158,15 +165,16 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       padding: 16,
       borderBottomWidth: 1,
-      borderBottomColor: '#333',
+      borderBottomColor: COLORS.border,
   },
   headerTitle: {
-      color: '#00ffcc',
-      fontWeight: 'bold',
+      color: COLORS.accent,
+      fontFamily: FONTS.monoBold,
       fontSize: 16,
   },
   headerSubtitle: {
-      color: '#fff',
+      color: COLORS.text,
+      fontFamily: FONTS.mono,
       fontSize: 14,
   },
   exitButton: {
@@ -175,17 +183,18 @@ const styles = StyleSheet.create({
       borderRadius: 8,
   },
   exitText: {
-      color: '#ff4444',
-      fontWeight: 'bold',
+      color: COLORS.danger,
+      fontFamily: FONTS.bold,
   },
   banner: {
-      backgroundColor: '#222',
+      backgroundColor: COLORS.secondary,
       padding: 8,
       alignItems: 'center',
   },
   bannerText: {
       color: '#888',
       fontSize: 12,
+      fontFamily: FONTS.mono,
   },
   listContent: {
       padding: 16,
@@ -203,41 +212,44 @@ const styles = StyleSheet.create({
   },
   peerMessage: {
       alignSelf: 'flex-start',
-      backgroundColor: '#333',
+      backgroundColor: COLORS.secondary,
       borderBottomLeftRadius: 4,
   },
   messageText: {
-      color: '#fff',
+      color: COLORS.text,
       fontSize: 16,
+      fontFamily: FONTS.regular,
   },
   timestamp: {
       color: 'rgba(255,255,255,0.6)',
       fontSize: 10,
       marginTop: 4,
       alignSelf: 'flex-end',
+      fontFamily: FONTS.mono,
   },
   inputContainer: {
       flexDirection: 'row',
       padding: 16,
       borderTopWidth: 1,
-      borderTopColor: '#333',
+      borderTopColor: COLORS.border,
       alignItems: 'center',
   },
   input: {
       flex: 1,
-      backgroundColor: '#111',
-      color: '#fff',
+      backgroundColor: COLORS.secondary,
+      color: COLORS.text,
       borderRadius: 20,
       paddingHorizontal: 16,
       paddingVertical: 10,
       marginRight: 10,
+      fontFamily: FONTS.regular,
   },
   sendButton: {
       padding: 10,
   },
   sendText: {
       color: '#007AFF',
-      fontWeight: 'bold',
+      fontFamily: FONTS.bold,
       fontSize: 16,
   },
 });
