@@ -1,7 +1,8 @@
 import { Buffer } from 'buffer';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import nacl from 'tweetnacl';
 import { signal } from '../api/signal';
 import { COLORS, FONTS } from '../constants/theme';
@@ -101,7 +102,8 @@ export default function ChatScreen() {
 
   const handleExit = () => {
       resetSession();
-      navigation.popToTop();
+      router.dismissAll();
+      router.replace('/');
   };
 
   const renderItem = ({ item }: { item: Message }) => (

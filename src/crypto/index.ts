@@ -41,6 +41,10 @@ export const keyToString = (key: Uint8Array): string => {
     return encodeBase64(key);
 };
 
+export const keyToTopicId = (base64Key: string): string => {
+    return base64Key.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+};
+
 export const stringToKey = (str: string): Uint8Array => {
     return decodeBase64(str);
 };
