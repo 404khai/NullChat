@@ -1,14 +1,16 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { signal } from '../api/signal';
+import { COLORS, FONTS } from '../constants/theme';
 import { generateSessionKey, keyToString, stringToKey } from '../crypto';
 import { useIdentityStore } from '../store/identity';
 import { useSessionStore } from '../store/session';
 import { parseQRPayload } from '../utils/qr';
-import { FONTS, COLORS } from '../constants/theme';
 
-export default function QRScanScreen({ navigation }: any) {
+export default function QRScanScreen() {
+  const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const { setPeerInfo, setSessionKeyPair } = useSessionStore();
   const { username } = useIdentityStore();
@@ -56,7 +58,7 @@ export default function QRScanScreen({ navigation }: any) {
             console.log('Publishing Handshake to:', topic);
             signal.publish(topic, JSON.stringify(myInfo));
 
-            navigation.replace('Verification');
+            router.replace('/Verification');
         } catch (e) {
             console.warn("Invalid key format", e);
             setScanned(false);

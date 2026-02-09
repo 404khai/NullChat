@@ -1,10 +1,12 @@
+import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, FONTS } from '../constants/theme';
 import { useIdentityStore } from '../store/identity';
 import { useSessionStore } from '../store/session';
 
-export default function WelcomeScreen({ navigation }: any) {
+export default function WelcomeScreen() {
+  const router = useRouter();
   const { username, init } = useIdentityStore();
   const resetSession = useSessionStore((state: { resetSession: any; }) => state.resetSession);
 
@@ -33,14 +35,14 @@ export default function WelcomeScreen({ navigation }: any) {
         <View style={styles.actions}>
           <TouchableOpacity 
             style={[styles.button, styles.primaryButton]} 
-            onPress={() => navigation.navigate('QRShare')}
+            onPress={() => router.push('/QRShare')}
           >
             <Text style={styles.buttonText}>Share Secure QR</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
             style={[styles.button, styles.secondaryButton]} 
-            onPress={() => navigation.navigate('QRScan')}
+            onPress={() => router.push('/QRScan')}
           >
             <Text style={[styles.buttonText, styles.secondaryButtonText]}>Scan Secure QR</Text>
           </TouchableOpacity>
@@ -69,13 +71,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 42,
-    fontFamily: FONTS.monoBold,
+    fontFamily: FONTS.geistPixel,
     color: COLORS.text,
     marginBottom: 8,
   },
   tagline: {
     fontSize: 18,
-    fontFamily: FONTS.regular,
+    fontFamily: FONTS.dotoBold,
     color: '#888',
     marginBottom: 48,
   },
@@ -91,20 +93,20 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontFamily: FONTS.monoBold,
+    fontFamily: FONTS.dotoBold,
     color: '#666',
     marginBottom: 8,
     letterSpacing: 1,
   },
   username: {
     fontSize: 24,
-    fontFamily: FONTS.mono,
+    fontFamily: FONTS.geistPixel,
     color: COLORS.accent,
     marginBottom: 8,
   },
   hint: {
     fontSize: 14,
-    fontFamily: FONTS.regular,
+    fontFamily: FONTS.dotoBold,
     color: '#555',
   },
   actions: {
@@ -127,7 +129,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontFamily: FONTS.bold,
+    fontFamily: FONTS.dotoBold,
     color: '#000',
   },
   secondaryButtonText: {

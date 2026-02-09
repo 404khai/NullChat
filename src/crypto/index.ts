@@ -16,6 +16,12 @@ const polyfillCrypto = () => {
 
 polyfillCrypto();
 
+// Explicitly set PRNG for tweetnacl if needed (though global.crypto should suffice)
+nacl.setPRNG((x, n) => {
+    const randomBytes = Crypto.getRandomValues(new Uint8Array(n));
+    for (let i = 0; i < n; i++) x[i] = randomBytes[i];
+});
+
 export interface KeyPair {
     publicKey: Uint8Array;
     privateKey: Uint8Array;

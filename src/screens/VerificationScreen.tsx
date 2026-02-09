@@ -1,10 +1,10 @@
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import nacl from 'tweetnacl';
 import { COLORS, FONTS } from '../constants/theme';
 import { computeSharedSecret } from '../crypto';
 import { useSessionStore } from '../store/session';
-
 export default function VerificationScreen({ navigation }: any) {
   const { sessionKeyPair, peerPublicKey, peerUsername, setSharedSecret } = useSessionStore();
   const [fingerprint, setFingerprint] = useState<string>('');
@@ -24,11 +24,12 @@ export default function VerificationScreen({ navigation }: any) {
   }, [sessionKeyPair, peerPublicKey]);
 
   const handleVerify = () => {
-      navigation.replace('Chat');
+      router.replace('/(tabs)');
   };
 
   const handleCancel = () => {
-      navigation.popToTop();
+      router.dismissAll();
+      router.replace('/');
   };
 
   return (

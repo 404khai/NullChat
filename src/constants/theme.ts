@@ -3,9 +3,9 @@ export const FONTS = {
     bold: 'Geist-Bold',
     mono: 'GeistMono-Regular',
     monoBold: 'GeistMono-Bold',
-    pixel: 'DotoRegular', // Using Doto as the primary pixel font for now
-    pixelBold: 'DotoBold',
-    geistPixel: 'GeistPixel', // Placeholder for Geist Pixel
+    doto: 'DotoRegular', // Using Doto as the primary pixel font for now
+    dotoBold: 'DotoBold',
+    geistPixel: 'GeistPixel-Square', // Placeholder for Geist Pixel
 };
 
 export const COLORS = {
