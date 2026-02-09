@@ -173,12 +173,12 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
       color: COLORS.accent,
-      fontFamily: FONTS.monoBold,
+      fontFamily: FONTS.dotoBold,
       fontSize: 16,
   },
   headerSubtitle: {
       color: COLORS.text,
-      fontFamily: FONTS.mono,
+      fontFamily: FONTS.geistPixel,
       fontSize: 14,
   },
   exitButton: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   },
   exitText: {
       color: COLORS.danger,
-      fontFamily: FONTS.bold,
+      fontFamily: FONTS.dotoBold,
   },
   banner: {
       backgroundColor: COLORS.secondary,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   bannerText: {
       color: '#888',
       fontSize: 12,
-      fontFamily: FONTS.mono,
+      fontFamily: FONTS.geistPixel,
   },
   listContent: {
       padding: 16,
@@ -211,25 +211,25 @@ const styles = StyleSheet.create({
   },
   myMessage: {
       alignSelf: 'flex-end',
-      backgroundColor: '#007AFF',
+      backgroundColor: '#1a1a1aff',
       borderBottomRightRadius: 4,
   },
   peerMessage: {
       alignSelf: 'flex-start',
-      backgroundColor: COLORS.secondary,
+      backgroundColor: '#303030ff',
       borderBottomLeftRadius: 4,
   },
   messageText: {
-      color: COLORS.text,
+      color: COLORS.accent,
       fontSize: 16,
-      fontFamily: FONTS.regular,
+      fontFamily: FONTS.dotoBold,
   },
   timestamp: {
       color: 'rgba(255,255,255,0.6)',
       fontSize: 10,
       marginTop: 4,
       alignSelf: 'flex-end',
-      fontFamily: FONTS.mono,
+      fontFamily: FONTS.dotoBold,
   },
   inputContainer: {
       flexDirection: 'row',
@@ -246,14 +246,14 @@ const styles = StyleSheet.create({
       paddingHorizontal: 16,
       paddingVertical: 10,
       marginRight: 10,
-      fontFamily: FONTS.regular,
+      fontFamily: FONTS.geistPixel,
   },
   sendButton: {
       padding: 10,
   },
   sendText: {
-      color: '#007AFF',
-      fontFamily: FONTS.bold,
+      color: '#00ff33ff',
+      fontFamily: FONTS.dotoBold,
       fontSize: 16,
   },
 });
